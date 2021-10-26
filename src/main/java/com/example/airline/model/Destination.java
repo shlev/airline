@@ -24,7 +24,7 @@ public class Destination {
     @OneToOne
     private Airline homeBaseAirline;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Airline> airlines = new HashSet<>();
 
     public Destination() {}
@@ -83,6 +83,14 @@ public class Destination {
 
     public void setAirlines(Set<Airline> airlines) {
         this.airlines = airlines;
+    }
+
+    public void addAirline(Airline airline) {
+        this.airlines.add(airline);
+    }
+
+    public String getName() {
+        return this.country + ", " + this.city;
     }
 
     @Override

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,7 +34,7 @@ class AircraftServiceTest extends MainTest {
     void whenSaved_thenReturn() {
         aircraftService.save(getAirCraft1());
         int actual = aircraftService.getAll().size();
-        int expected = 2;
+        int expected = 1;
         assertEquals(expected, actual);
     }
 
@@ -41,7 +42,11 @@ class AircraftServiceTest extends MainTest {
     @Test
     void getSellPriceTest() {
         Aircraft aircraft = aircraftService.getByName(AIRCRAFT_NAME);
-        aircraft.setStartedAt(new Date(118, 3, 23));
+        Calendar calendar= Calendar.getInstance();
+        calendar.set(Calendar.YEAR, 2018);
+        calendar.set(Calendar.MONTH, 3);
+        calendar.set(Calendar.DAY_OF_MONTH,23);
+        aircraft.setStartedAt(calendar.getTime());
         long sellPrice = aircraftService.getSellPrice(aircraft, new Date());
         assertEquals(160, sellPrice);
     }
@@ -49,6 +54,4 @@ class AircraftServiceTest extends MainTest {
     private Aircraft getAirCraft1() {
         return new Aircraft(AIRCRAFT_NAME, 1000,300 );
     }
-
-
 }

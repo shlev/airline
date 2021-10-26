@@ -63,16 +63,33 @@ public class Airline {
         this.homeBase = homeBase;
     }
 
+    public void setAircrafts(Set<Aircraft> aircrafts) {
+        this.aircrafts = aircrafts;
+    }
+
+    public Set<Destination> getDestinations() {
+        Set<Destination> r = new HashSet<>(destinations);
+        r.add(homeBase);
+        return r;
+    }
+
+    public void setDestinations(Set<Destination> destinations) {
+        this.destinations = destinations;
+    }
+
     public void addAircraft(Aircraft aircraft) {
         aircrafts.add(aircraft);
         aircraft.setAirline(this);
     }
 
-    public void removeArtifact(Aircraft aircraft) {
+    public void addDestination(Destination destination) {
+        destinations.add(destination);
+        destination.addAirline(this);
+    }
+
+    public void removeAircraft(Aircraft aircraft) {
         aircrafts.remove(aircraft);
         aircraft.setAirline(null);
-
-
     }
 
     public Set<Aircraft> getAircrafts() {

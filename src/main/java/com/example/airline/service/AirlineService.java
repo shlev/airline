@@ -2,6 +2,7 @@ package com.example.airline.service;
 
 import com.example.airline.model.Aircraft;
 import com.example.airline.model.Airline;
+import com.example.airline.model.Destination;
 import com.example.airline.repository.AirlineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,19 +20,8 @@ public class AirlineService {
     @Autowired
     private AircraftService aircraftService;
 
-//    @PostConstruct
-//    private void init() {
-//        Airline elal = new Airline("ElAl", 4000, "Tel-Aviv Israel");
-//        Airline qatarAirlines = new Airline("Qatar Airlines", 12000, "Doha Qatar");
-//        Airline turkishAirlines = new Airline("Turkish Airlines", 8000, "Istanbul Turkey");
-//        List<Airline> airlines = new ArrayList<>(Arrays.asList(elal, qatarAirlines, turkishAirlines));
-//        saveAll(airlines);
-//
-//        Aircraft aircraft = new Aircraft("Airplane", 100, 200);
-//        aircraftService.save(aircraft);
-//        buy(qatarAirlines, aircraft);
-//        save(qatarAirlines);
-//    }
+    @Autowired
+    private DestinationService destinationService;
 
     private List<Airline> saveAll(List<Airline> airlines) {
         return airlineRepository.saveAll(airlines);
@@ -51,7 +41,7 @@ public class AirlineService {
     }
 
     public Map<String, Long> getBudget(List<String> names) {
-        return names.stream().collect(Collectors.toMap(name ->name, name->getBudget(name) ));
+        return names.stream().collect(Collectors.toMap(name ->name, this::getBudget ));
     }
 
     public Airline getByName(String name) {
@@ -66,7 +56,7 @@ public class AirlineService {
 
     private void sell(Airline seller, Aircraft aircraft) {
         long sellPrice = aircraftService.getSellPrice(aircraft);
-        seller.removeArtifact(aircraft);
+        seller.removeAircraft(aircraft);
         seller.setBalance(seller.getBalance()+sellPrice);
     }
 
@@ -78,4 +68,14 @@ public class AirlineService {
         this.save(seller);
         this.save(buyer);
     }
+
+    public void buy(Airline buyer, Airline seller, String aircraftName) {
+        sell(seller, buyer, aircraftName);
+    }
+
+    public void addDestination(Airline airline, Destination destination) {
+        airline.addDestination(destination);
+        save(airline);
+    }
+
 }

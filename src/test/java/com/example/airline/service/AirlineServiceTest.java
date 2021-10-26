@@ -3,6 +3,7 @@ package com.example.airline.service;
 import com.example.airline.MainTest;
 import com.example.airline.model.Aircraft;
 import com.example.airline.model.Airline;
+import com.example.airline.model.Destination;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,7 +23,14 @@ class AirlineServiceTest extends MainTest {
 
     @Autowired AircraftService aircraftService;
 
-    @Order(1)
+    @Autowired DestinationService destinationService;
+
+    @Order(5)
+    @Test
+    void initGetAllTest() {
+        assertEquals(4, airlineService.getAll().size());
+    }
+    @Order(10)
     @Test
     void whenAddAirline_airlineGetsId() {
         Airline airline = getAirline();
@@ -34,14 +42,14 @@ class AirlineServiceTest extends MainTest {
         assertEquals(airline.getName(), saved.getName());
     }
 
-    @Order(2)
+    @Order(20)
     @Test
     void whenAskBalanceByName() {
         long actualBudget = airlineService.getBudget(NAME1);
         assertEquals(BUDGET1, actualBudget);
     }
 
-    @Order(3)
+    @Order(30)
     @Test
     void whenAskBalanceByListOfNames() {
         airlineService.save(getAirline2());
@@ -52,14 +60,14 @@ class AirlineServiceTest extends MainTest {
 
     }
 
-    @Order(4)
+    @Order(40)
     @Test
     void getAirlineByNameTest() {
         Airline airline = airlineService.getByName(NAME2);
         assertEquals(airline.getBalance(), BUDGET2);
     }
 
-    @Order(5)
+    @Order(50)
     @Test
     void whenAddAirCraft_airCraftListAndBalanceUpdated() {
         Airline airline = airlineService.getByName(NAME1);
@@ -75,8 +83,6 @@ class AirlineServiceTest extends MainTest {
         assertEquals(updatedAirline.getBalance(), balance-aircraftService.getSellPrice(savedAircraft));
         //TODO improve test
         assertTrue(containsAircraft(updatedAirline, AIRCRAFT_NAME));
-
-
     }
 
     private boolean containsAircraft(Airline updatedAirline, String aircraftName) {
@@ -85,9 +91,9 @@ class AirlineServiceTest extends MainTest {
         return first.isPresent();
     }
 
-    @Order(6)
+    @Order(60)
     @Test
-    void whenSellAirCraft_updateOwners(){
+    void whenSellAirCraft_updateOwnersAndBalance(){
         Airline seller = airlineService.getByName(NAME1);
         assertTrue(containsAircraft(seller, AIRCRAFT_NAME));
         Airline buyer = airlineService.getByName(NAME2);
@@ -105,9 +111,45 @@ class AirlineServiceTest extends MainTest {
         assertEquals(BUDGET1 , seller.getBalance());
         assertEquals(BUDGET2 - sellPrice, buyer.getBalance());
         Aircraft updatedAircraft = aircraftService.getByName(AIRCRAFT_NAME);
-        assertTrue(updatedBuyer.equals(updatedAircraft.getAirline()));
+        assertEquals(updatedBuyer, updatedAircraft.getAirline());
+    }
 
+    @Order(60)
+    @Test
+    void whenBuyAirCraft_updateOwnersAndBalance(){
+        Airline buyer = airlineService.getByName(NAME1);
+        assertFalse(containsAircraft(buyer, AIRCRAFT_NAME));
+        Airline seller = airlineService.getByName(NAME2);
+        assertTrue(containsAircraft(seller, AIRCRAFT_NAME));
 
+        airlineService.buy(buyer, seller, AIRCRAFT_NAME);
+
+        long sellPrice = aircraftService.getSellPrice(AIRCRAFT_NAME);
+        Airline updatedSeller = airlineService.getByName(NAME2);
+        Airline updatedBuyer = airlineService.getByName(NAME1);
+
+        assertTrue(containsAircraft(updatedBuyer, AIRCRAFT_NAME));
+        assertFalse(containsAircraft(updatedSeller, AIRCRAFT_NAME));
+
+        assertEquals(BUDGET2 , seller.getBalance());
+        assertEquals(BUDGET1 , buyer.getBalance()+sellPrice);
+        Aircraft updatedAircraft = aircraftService.getByName(AIRCRAFT_NAME);
+        assertEquals(updatedBuyer, updatedAircraft.getAirline());
+    }
+
+    @Order(70)
+    @Test
+    void whenAddDestination_destinationOnList() {
+        Destination destination = destinationService.getByID(12).get();
+        Airline airline = airlineService.getByName(NAME1);
+        assertFalse(airline.getDestinations().contains(destination));
+        assertFalse(destination.getAirlines().contains(airline));
+        airlineService.addDestination(airline, destination);
+
+        Airline updatedAirline = airlineService.getByName(NAME1);
+        assertTrue(updatedAirline.getDestinations().contains(destination));
+        Destination updatedDestination = destinationService.getByID(12).get();
+        assertTrue(updatedDestination.getAirlines().contains(updatedAirline));
     }
 
 
@@ -121,12 +163,13 @@ class AirlineServiceTest extends MainTest {
     }
 
     Airline getAirline() {
-
-        return new Airline(NAME1, BUDGET1, null);
+        Optional<Destination> optDestination = destinationService.getByID(3);
+        return new Airline(NAME1, BUDGET1, optDestination.get());
     }
 
     Airline getAirline2() {
-        return new Airline(NAME2, BUDGET2, null );
+        Optional<Destination> optDestination = destinationService.getByID(5);
+        return new Airline(NAME2, BUDGET2, optDestination.get() );
     }
 
 

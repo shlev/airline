@@ -23,27 +23,33 @@ class DestinationServiceTest extends MainTest {
     @Test
     public void getAllDestinationTest() {
         List<Destination> all = destinationService.getAll();
-        assertEquals(all.size(), 100);
+        assertEquals(20, all.size());
     }
 
     @Order(2)
     @Test
     public void whenGetByID_returnExist() {
-        Optional<Destination> optionalDestination = destinationService.getByID(98691);
+        Optional<Destination> optionalDestination = destinationService.getByID(3);
         assertTrue(optionalDestination.isPresent());
         Destination destination = optionalDestination.get();
-        assertEquals("Shanling", destination.getCity());
-        assertEquals("China", destination.getCountry());
-        assertEquals(113.358645, destination.getLongitude());
-        assertEquals(27.582186, destination.getLatitude());
+        assertEquals("Maasin", destination.getCity());
+        assertEquals("Philippines", destination.getCountry());
+        assertEquals(124.841371, destination.getLongitude());
+        assertEquals(10.132503, destination.getLatitude());
     }
 
+//    https://www.geodatasource.com/distance-calculator
     @Order(3)
     @Test
     public void getDistanceTest() {
-        Destination destination1 = destinationService.getByID(6309).get();
-        Destination destination2 = destinationService.getByID(60730).get();
-        destinationService.getDistance(destination1, destination2);
+        Destination destination1 = destinationService.getByID(4).get();
+        Destination destination2 = destinationService.getByID(5).get();
+        double distance = destinationService.getDistanceGeoCalc(destination1, destination2);
+        double expected = 4183.79;
+        boolean inRange = Math.abs(expected - distance) < 10;
+        assertTrue(inRange);
     }
+
+
 
 }
