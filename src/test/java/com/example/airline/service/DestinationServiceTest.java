@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class DestinationServiceTest extends MainTest {
 
     @Autowired
-    DestinationService destinationService;
+    DestinationServiceImpl destinationService;
 
     @Order(1)
     @Test

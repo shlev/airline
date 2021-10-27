@@ -21,7 +21,7 @@ public class AirlineService {
     private AircraftService aircraftService;
 
     @Autowired
-    private DestinationService destinationService;
+    private DestinationServiceImpl destinationService;
 
     private List<Airline> saveAll(List<Airline> airlines) {
         return airlineRepository.saveAll(airlines);

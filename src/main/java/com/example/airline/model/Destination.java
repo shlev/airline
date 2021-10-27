@@ -3,6 +3,9 @@ package com.example.airline.model;
 
 
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
@@ -10,12 +13,15 @@ import java.util.Set;
 
 
 @Entity
+@NoArgsConstructor
+@Data
 public class Destination {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    private String name;
     private String country;
     private String city;
     private double latitude;
@@ -27,70 +33,8 @@ public class Destination {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Airline> airlines = new HashSet<>();
 
-    public Destination() {}
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
-
-    public Airline getHomeBaseAirline() {
-        return homeBaseAirline;
-    }
-
-    public void setHomeBaseAirline(Airline homeBaseAirline) {
-        this.homeBaseAirline = homeBaseAirline;
-    }
-
-    public Set<Airline> getAirlines() {
-        return airlines;
-    }
-
-    public void setAirlines(Set<Airline> airlines) {
-        this.airlines = airlines;
-    }
-
     public void addAirline(Airline airline) {
         this.airlines.add(airline);
-    }
-
-    public String getName() {
-        return this.country + ", " + this.city;
     }
 
     @Override

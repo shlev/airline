@@ -23,7 +23,8 @@ class AirlineServiceTest extends MainTest {
 
     @Autowired AircraftService aircraftService;
 
-    @Autowired DestinationService destinationService;
+    @Autowired
+    DestinationServiceImpl destinationService;
 
     @Order(5)
     @Test
