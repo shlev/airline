@@ -141,7 +141,7 @@ class AirlineServiceTest extends MainTest {
     @Order(70)
     @Test
     void whenAddDestination_destinationOnList() {
-        Destination destination = destinationService.getByID(12).get();
+        Destination destination = destinationService.getById(12L);
         Airline airline = airlineService.getByName(NAME1);
         assertFalse(airline.getDestinations().contains(destination));
         assertFalse(destination.getAirlines().contains(airline));
@@ -149,7 +149,7 @@ class AirlineServiceTest extends MainTest {
 
         Airline updatedAirline = airlineService.getByName(NAME1);
         assertTrue(updatedAirline.getDestinations().contains(destination));
-        Destination updatedDestination = destinationService.getByID(12).get();
+        Destination updatedDestination = destinationService.getById(12L);
         assertTrue(updatedDestination.getAirlines().contains(updatedAirline));
     }
 
@@ -164,13 +164,13 @@ class AirlineServiceTest extends MainTest {
     }
 
     Airline getAirline() {
-        Optional<Destination> optDestination = destinationService.getByID(3);
-        return new Airline(NAME1, BUDGET1, optDestination.get());
+        Destination destination = destinationService.getById(3L);
+        return new Airline(NAME1, BUDGET1, destination);
     }
 
     Airline getAirline2() {
-        Optional<Destination> optDestination = destinationService.getByID(5);
-        return new Airline(NAME2, BUDGET2, optDestination.get() );
+        Destination destination = destinationService.getById(5L);
+        return new Airline(NAME2, BUDGET2, destination );
     }
 
 

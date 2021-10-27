@@ -29,9 +29,7 @@ class DestinationServiceTest extends MainTest {
     @Order(2)
     @Test
     public void whenGetByID_returnExist() {
-        Optional<Destination> optionalDestination = destinationService.getByID(3);
-        assertTrue(optionalDestination.isPresent());
-        Destination destination = optionalDestination.get();
+        Destination destination = destinationService.getById(3L);
         assertEquals("Maasin", destination.getCity());
         assertEquals("Philippines", destination.getCountry());
         assertEquals(124.841371, destination.getLongitude());
@@ -42,8 +40,8 @@ class DestinationServiceTest extends MainTest {
     @Order(3)
     @Test
     public void getDistanceTest() {
-        Destination destination1 = destinationService.getByID(4).get();
-        Destination destination2 = destinationService.getByID(5).get();
+        Destination destination1 = destinationService.getById(4L);
+        Destination destination2 = destinationService.getById(5L);
         double distance = destinationService.getDistanceGeoCalc(destination1, destination2);
         double expected = 4183.79;
         boolean inRange = Math.abs(expected - distance) < 10;
